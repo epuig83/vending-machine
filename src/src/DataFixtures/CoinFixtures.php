@@ -10,18 +10,30 @@ class CoinFixtures extends Fixture
 {
 
     public const COINS_DATA = [
-        0.05 => 50,
-        0.10 => 40,
-        0.25 => 30,
-        1 => 20
+        [
+            'value' => 0.05,
+            'amount' => 50
+        ],
+        [
+            'value' => 0.10,
+            'amount' => 40
+        ],
+        [
+            'value' => 0.25,
+            'amount' => 30
+        ],
+        [
+            'value' => 1,
+            'amount' => 20
+        ]
     ];
 
     public function load(ObjectManager $manager)
     {
-        foreach (self::COINS_DATA as $value => $amount) {
+        foreach (self::COINS_DATA as $data) {
             $coin = new Coin();
-            $coin->setValue($value);
-            $coin->setAmount($amount);
+            $coin->setValue($data['value']);
+            $coin->setAmount($data['amount']);
             $manager->persist($coin);
         }
 
