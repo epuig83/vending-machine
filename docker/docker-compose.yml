@@ -40,7 +40,7 @@ services:
     links:
       - mysql
     ports:
-      - 8088:80
+      - "8088:80"
     volumes:
       - /sessions
     networks:
