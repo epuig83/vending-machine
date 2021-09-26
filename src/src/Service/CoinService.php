@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Coin;
+use App\Exception\CoinException;
 use Doctrine\Persistence\ManagerRegistry;
 
 class CoinService
@@ -17,9 +18,20 @@ class CoinService
         $this->manager = $managerRegistry;
     }
 
+    /**
+     * @param float $value
+     * @return Coin|null
+     * @throws CoinException
+     */
     public function findCoinByValue(float $value): ?Coin
     {
         $repository = $this->manager->getRepository(Coin::class);
-        return $repository->findOneBy(['value' => $value]);
+        $coin = $repository->findOneBy(['value' => $value]);
+
+        if (!$coin) {
+            throw CoinException::notFoundMessage();
+        }
+
+        return $coin;
     }
 }
