@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Exception\CoinException;
 use App\Utils\CoinHelper;
 
 class VendingService
@@ -30,6 +31,7 @@ class VendingService
 
     /**
      * @param string $coinString
+     * @throws CoinException
      */
     public function insertCoin(string $coinString): void
     {
