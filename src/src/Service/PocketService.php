@@ -7,6 +7,9 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class PocketService
 {
+    /**
+     * @var RequestStack
+     */
     private $requestStack;
 
     public function __construct(RequestStack $requestStack)
