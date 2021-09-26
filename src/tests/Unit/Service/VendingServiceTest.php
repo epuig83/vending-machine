@@ -3,6 +3,7 @@
 namespace App\Tests\Unit\Service;
 
 use App\Entity\Coin;
+use App\Exception\CoinException;
 use App\Service\CoinService;
 use App\Service\PocketService;
 use App\Service\VendingService;
@@ -34,6 +35,9 @@ class VendingServiceTest extends TestCase
         $this->coinHelper = $this->createMock(CoinHelper::class);
     }
 
+    /**
+     * @throws CoinException
+     */
     public function testReturnCoins(): void
     {
         $coinValue = 0.25;
@@ -48,7 +52,7 @@ class VendingServiceTest extends TestCase
             ->willReturn($coin);
 
         $vendingService = new VendingService($this->coinService, $this->pocketService, $this->coinHelper);
-        $vendingService->insertCoin("0.25");
+        $vendingService->insertCoin((string) $coinValue);
 
         $this->pocketService->expects($this->once())
             ->method('returnCoins')
