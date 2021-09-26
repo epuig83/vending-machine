@@ -1,3 +1,9 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+api__insert_coin:
+  path:       /api/coin/insert/{coin}
+  controller: App\Controller\VendingApiController::insertCoin
+  methods:    POST
+
+api__coin_return:
+  path:       /api/coin/return
+  controller: App\Controller\VendingApiController::returnCoin
+  methods:    GET

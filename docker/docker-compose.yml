@@ -19,7 +19,7 @@ services:
     hostname: localhost
     environment:
       MYSQL_ROOT_PASSWORD: 'toor'
-      MYSQL_DATABASE: vending-machine
+      MYSQL_DATABASE: vending_machine
     ports:
       - "3307:3306"
     volumes:

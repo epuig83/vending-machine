@@ -20,7 +20,7 @@ class Item
     private $id;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="string")
      */
     private $name;
 

@@ -23,3 +23,15 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\PocketService:
+        autowire: true
+
+    App\Utils\CoinHelper:
+        autowire: true
+
+    App\Service\CoinService:
+        autowire: true
+
+    App\Service\VendingService:
+        autowire: true
