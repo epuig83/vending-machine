@@ -17,7 +17,7 @@ class PocketService
     /**
      * @return array
      */
-    public function getCoins(): array
+    private function getCoins(): array
     {
         $session = $this->requestStack->getSession();
         return $session->get('pocket', []);
@@ -26,7 +26,7 @@ class PocketService
     /**
      * @param array $pocket
      */
-    public function store(array $pocket): void
+    private function store(array $pocket): void
     {
         $session = $this->requestStack->getSession();
         $session->set('pocket', $pocket);
@@ -35,7 +35,7 @@ class PocketService
     /**
      *
      */
-    public function empty(): void
+    private function empty(): void
     {
         $session = $this->requestStack->getSession();
         $session->set('pocket', []);
