@@ -47,4 +47,12 @@ class VendingService
     {
         return $this->pocketService->returnCoins();
     }
+
+    /**
+     * @return array
+     */
+    public function coinStatus(): array
+    {
+        return $this->pocketService->status();
+    }
 }

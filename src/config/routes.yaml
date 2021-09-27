@@ -7,3 +7,9 @@ api__coin_return:
   path:       /api/coin/return
   controller: App\Controller\VendingApiController::returnCoin
   methods:    GET
+
+api__coin_status:
+  path:       /api/coin/status
+  controller: App\Controller\VendingApiController::getCoinStatus
+  methods:    GET
+

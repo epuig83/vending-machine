@@ -20,4 +20,10 @@ class VendingApiController extends AbstractController
         $coins = $vendingService->returnCoin();
         return $this->json($coins, Response::HTTP_OK);
     }
+
+    public function getCoinStatus(VendingService $vendingService): Response
+    {
+        $status = $vendingService->coinStatus();
+        return $this->json($status, Response::HTTP_OK);
+    }
 }

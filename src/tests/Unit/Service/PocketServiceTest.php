@@ -59,4 +59,28 @@ class PocketServiceTest extends TestCase
         $this->assertEquals([0.1, 0.05], $pocketService->returnCoins());
     }
 
+    public function testStatus(): void
+    {
+        $coin = new Coin();
+        $coin->setValue(0.05);
+
+        $coin2 = new Coin();
+        $coin2->setValue(0.10);
+
+        $pocketService = new PocketService($this->requestStack);
+        $pocketService->insertCoin($coin);
+        $pocketService->insertCoin($coin2);
+
+        $this->assertEquals(
+            [
+                'money' => 0.15,
+                'coins' => [
+                    0.05,
+                    0.10
+                ]
+            ],
+            $pocketService->status()
+        );
+    }
+
 }

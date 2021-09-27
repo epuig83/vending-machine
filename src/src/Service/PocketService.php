@@ -27,6 +27,20 @@ class PocketService
     }
 
     /**
+     * @return float
+     */
+    private function getTotal(): float
+    {
+        $total = 0;
+        $coins = $this->getCoins();
+        foreach ($coins as $coin) {
+            $total += $coin;
+        }
+
+        return $total;
+    }
+
+    /**
      * @param array $pocket
      */
     private function store(array $pocket): void
@@ -62,5 +76,16 @@ class PocketService
         $pocket = $this->getCoins();
         $this->empty();
         return $pocket;
+    }
+
+    /**
+     * @return array
+     */
+    public function status(): array
+    {
+        return [
+            'money' => $this->getTotal(),
+            'coins' => $this->getCoins()
+        ];
     }
 }
