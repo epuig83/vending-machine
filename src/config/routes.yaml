@@ -13,3 +13,7 @@ api__coin_status:
   controller: App\Controller\VendingApiController::getCoinStatus
   methods:    GET
 
+api__item_buy:
+  path:       /api/item/buy/{name}
+  controller: App\Controller\VendingApiController:getItemBuy
+  methods:    GET
