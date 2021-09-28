@@ -9,7 +9,7 @@ class ItemException extends Exception
 {
     public static function notFoundMessage(): self
     {
-        return new self('Item not found!');
+        return new self('Item(s) not found!');
     }
 
     public static function notEnoughMoney(): self

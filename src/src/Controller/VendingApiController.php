@@ -5,17 +5,31 @@ namespace App\Controller;
 use App\Exception\CoinException;
 use App\Exception\ItemException;
 use App\Service\VendingService;
+use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class VendingApiController extends AbstractController
 {
     /**
+     * @OA\Post(tags={"Coin"}, summary="Insert new coin inside the vending machine.",
+     *      @OA\Parameter(
+     *          name="coin",
+     *          in="path",
+     *          required=true,
+     *          description="The coin value."
+     *      ),
+     *      @OA\Response(
+     *          response=201,
+     *          description="Insert Coin"
+     *      )
+     * )
+     *
      * @param Request $request
      * @param VendingService $vendingService
      * @return Response
-     * @throws \App\Exception\CoinException
      */
     public function insertCoin(Request $request, VendingService $vendingService): Response
     {
@@ -34,6 +48,13 @@ class VendingApiController extends AbstractController
     }
 
     /**
+     * @OA\Get(tags={"Coin"}, summary="Return inserted coins in the vending machine.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Return inserted coins."
+     *      )
+     * )
+     *
      * @param VendingService $vendingService
      * @return Response
      */
@@ -44,19 +65,33 @@ class VendingApiController extends AbstractController
     }
 
     /**
+     * @OA\Get(tags={"Coin"}, summary="Show total money and inserted coins in the vending machine.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Return inserted coins."
+     *      )
+     * )
+     *
      * @param VendingService $vendingService
      * @return Response
      */
     public function getCoinStatus(VendingService $vendingService): Response
     {
-        $status = $vendingService->coinStatus();
-        return $this->json($status, Response::HTTP_OK);
+        return $this->json($vendingService->coinStatus(), Response::HTTP_OK);
     }
 
     /**
+     * @OA\Get(tags={"Item"}, summary="Select item to buy and get coins change.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Return change coins."
+     *      )
+     * )
+     *
      * @param Request $request
      * @param VendingService $vendingService
      * @return Response
+     * @throws CoinException
      */
     public function getItemBuy(Request $request, VendingService $vendingService): Response
     {
@@ -73,5 +108,30 @@ class VendingApiController extends AbstractController
             ], Response::HTTP_OK);
         }
 
+    }
+
+    /**
+     * @OA\Get(tags={"Item"}, summary="Get item status from vending machine.",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Return all items from vending machine."
+     *      )
+     * )
+     *
+     * @param SerializerInterface $serializer
+     * @param VendingService $vendingService
+     * @return Response
+     * @throws ItemException
+     */
+    public function getItemStatus(SerializerInterface $serializer, VendingService $vendingService): Response
+    {
+        return new Response(
+            $serializer->serialize(
+                $vendingService->getItemStatus(),
+                'json',
+                ['json_encode_options' => JSON_PRETTY_PRINT]
+            ),
+            Response::HTTP_OK
+        );
     }
 }

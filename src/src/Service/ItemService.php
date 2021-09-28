@@ -45,6 +45,22 @@ class ItemService
         $item->setAmount($item->getAmount() - self::ITEM_DECREASE_VALUE);
         $this->em->flush();
     }
+    
+    /**
+     * @return array
+     * @throws ItemException
+     */
+    public function status(): array
+    {
+        $repository = $this->em->getRepository(Item::class);
+        $items = $repository->findAll();
+
+        if (!$items) {
+            throw ItemException::notFoundMessage();
+        }
+
+        return $items;
+    }
 
 
 }

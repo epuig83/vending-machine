@@ -1,3 +1,13 @@
+app.swagger_ui:
+  path: /api/doc
+  methods: GET
+  defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+
+app.swagger:
+  path: /api/doc.json
+  methods: GET
+  defaults: { _controller: nelmio_api_doc.controller.swagger }
+
 api__insert_coin:
   path:       /api/coin/insert/{coin}
   controller: App\Controller\VendingApiController::insertCoin
@@ -16,4 +26,9 @@ api__coin_status:
 api__item_buy:
   path:       /api/item/buy/{name}
   controller: App\Controller\VendingApiController:getItemBuy
+  methods:    GET
+
+api__item_status:
+  path:       /api/item/status
+  controller: App\Controller\VendingApiController:getItemStatus
   methods:    GET

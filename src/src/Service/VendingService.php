@@ -94,6 +94,15 @@ class VendingService
 
     }
 
+    /**
+     * @return array
+     * @throws ItemException
+     */
+    public function getItemStatus(): array
+    {
+        return $this->itemService->status();
+    }
+
     private function updateStates(): void
     {
         $this->coinService->updateCoinStatus(
