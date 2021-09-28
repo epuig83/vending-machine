@@ -33,5 +33,12 @@ services:
     App\Service\CoinService:
         autowire: true
 
+    App\Service\ItemService:
+        autowire: true
+
+    App\Service\ChangeService:
+        autowire: true
+
     App\Service\VendingService:
         autowire: true
+

@@ -4,18 +4,18 @@ namespace App\Service;
 
 use App\Entity\Coin;
 use App\Exception\CoinException;
-use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 
 class CoinService
 {
     /**
-     * @Var ManagerRegistry
+     * @Var EntityManagerInterface
      */
-    protected $manager;
+    protected EntityManagerInterface $em;
 
-    public function __construct(ManagerRegistry $managerRegistry)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->manager = $managerRegistry;
+        $this->em = $entityManager;
     }
 
     /**
@@ -25,7 +25,7 @@ class CoinService
      */
     public function findCoinByValue(float $value): ?Coin
     {
-        $repository = $this->manager->getRepository(Coin::class);
+        $repository = $this->em->getRepository(Coin::class);
         $coin = $repository->findOneBy(['value' => $value]);
 
         if (!$coin) {
@@ -33,5 +33,29 @@ class CoinService
         }
 
         return $coin;
+    }
+
+    /**
+     * @param array $vendingCoins
+     * @param array $pocketCoins
+     */
+    public function updateCoinStatus(array $vendingCoins, array $pocketCoins): void
+    {
+        $repository = $this->em->getRepository(Coin::class);
+        $coins = $repository->findBy([], ['value' => 'DESC']);
+
+        foreach ($coins as $coin) {
+            $coinValue = $coin->getValue();
+            foreach($vendingCoins as $vendingCoin) {
+                if (bccomp($vendingCoin['value'], $coinValue, 2) == 0) {
+                    $coin->setAmount($vendingCoin['amount']);
+                }
+            }
+            if (in_array($coinValue, $pocketCoins)) {
+                $coin->setAmount($coin->getAmount() + 1);
+            }
+        }
+
+        $this->em->flush();
     }
 }

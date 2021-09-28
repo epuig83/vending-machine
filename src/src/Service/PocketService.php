@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Coin;
+use App\Entity\Item;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class PocketService
@@ -10,34 +11,11 @@ class PocketService
     /**
      * @var RequestStack
      */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack)
     {
         $this->requestStack = $requestStack;
-    }
-
-    /**
-     * @return array
-     */
-    private function getCoins(): array
-    {
-        $session = $this->requestStack->getSession();
-        return $session->get('pocket', []);
-    }
-
-    /**
-     * @return float
-     */
-    private function getTotal(): float
-    {
-        $total = 0;
-        $coins = $this->getCoins();
-        foreach ($coins as $coin) {
-            $total += $coin;
-        }
-
-        return $total;
     }
 
     /**
@@ -52,10 +30,33 @@ class PocketService
     /**
      *
      */
-    private function empty(): void
+    public function empty(): void
     {
         $session = $this->requestStack->getSession();
         $session->set('pocket', []);
+    }
+
+    /**
+     * @return array
+     */
+    public function getCoins(): array
+    {
+        $session = $this->requestStack->getSession();
+        return $session->get('pocket', []);
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalAmount(): float
+    {
+        $total = 0;
+        $coins = $this->getCoins();
+        foreach ($coins as $coin) {
+            $total += $coin;
+        }
+
+        return $total;
     }
 
     /**
@@ -84,7 +85,7 @@ class PocketService
     public function status(): array
     {
         return [
-            'money' => $this->getTotal(),
+            'money' => $this->getTotalAmount(),
             'coins' => $this->getCoins()
         ];
     }

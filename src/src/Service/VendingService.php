@@ -2,7 +2,9 @@
 
 namespace App\Service;
 
+use App\Entity\Item;
 use App\Exception\CoinException;
+use App\Exception\ItemException;
 use App\Utils\CoinHelper;
 
 class VendingService
@@ -10,23 +12,39 @@ class VendingService
     /**
      * @var CoinService
      */
-    protected $coinService;
+    protected CoinService $coinService;
 
     /**
      * @var PocketService
      */
-    protected $pocketService;
+    protected PocketService $pocketService;
 
     /**
-     * @var CoinHelper
+     * @var ItemService
      */
-    protected $coinHelper;
+    protected ItemService $itemService;
 
-    public function __construct(CoinService $coinService, PocketService $pocketService, CoinHelper $coinHelper)
+    /**
+     * @var ChangeService
+     */
+    protected ChangeService $changeService;
+
+    /**
+     * @var Item|null
+     */
+    private ?Item $selectedItem;
+
+    public function __construct(
+        CoinService $coinService,
+        PocketService $pocketService,
+        ItemService $itemService,
+        ChangeService $changeService)
     {
         $this->coinService = $coinService;
         $this->pocketService = $pocketService;
-        $this->coinHelper = $coinHelper;
+        $this->itemService = $itemService;
+        $this->changeService = $changeService;
+        $this->selectedItem = null;
     }
 
     /**
@@ -35,7 +53,7 @@ class VendingService
      */
     public function insertCoin(string $coinString): void
     {
-        $coinValue = $this->coinHelper->parseString($coinString);
+        $coinValue = CoinHelper::parseString($coinString);
         $coin = $this->coinService->findCoinByValue($coinValue);
         $this->pocketService->insertCoin($coin);
     }
@@ -54,5 +72,37 @@ class VendingService
     public function coinStatus(): array
     {
         return $this->pocketService->status();
+    }
+
+    /**
+     * @param string $item
+     * @return array
+     * @throws CoinException
+     * @throws ItemException
+     */
+    public function buyItem(string $item): array
+    {
+        $this->selectedItem  = $this->itemService->findItemByName($item);
+        if ($this->pocketService->getTotalAmount() < $this->selectedItem->getPrice()) {
+            throw ItemException::notEnoughMoney();
+        }
+
+        $change = $this->changeService->getChange($this->selectedItem, $this->pocketService->getTotalAmount());
+        $this->updateStates();
+
+        return $change;
+
+    }
+
+    private function updateStates(): void
+    {
+        $this->coinService->updateCoinStatus(
+            $this->changeService->getCoinStatus(),
+            $this->pocketService->getCoins(),
+        );
+
+        $this->pocketService->empty();
+        $this->itemService->updateItemStatus($this->selectedItem);
+
     }
 }
