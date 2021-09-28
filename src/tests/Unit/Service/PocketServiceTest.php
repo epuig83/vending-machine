@@ -3,7 +3,6 @@
 namespace App\Tests\Unit\Service;
 
 use App\Entity\Coin;
-use App\Service\CoinService;
 use App\Service\PocketService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,7 +15,7 @@ class PocketServiceTest extends TestCase
     /**
      * @var RequestStack
      */
-    private $requestStack;
+    private RequestStack $requestStack;
 
     protected function setUp(): void
     {

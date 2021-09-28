@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Item;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,16 +21,17 @@ class ItemRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @param string $itemName
+     * @return Item|null
+     * @throws NonUniqueResultException
      */
-    public function findOneByItemType(string $drinkType): ?Item
+    public function findOneAvailableByName(string $itemName): ?Item
     {
-        return $this->createQueryBuilder('d')
-            ->leftJoin('d.type', 'drink_type')
-            ->andWhere('drink_type.name = :name')
-            ->setParameter('name', $drinkType)
+        return $this->createQueryBuilder('i')
+            ->where('i.name = :name')
+            ->setParameter('name', $itemName)
+            ->andWhere('i.amount > 0')
             ->getQuery()
-            ->getOneOrNullResult()
-            ;
+            ->getOneOrNullResult();
     }
 }

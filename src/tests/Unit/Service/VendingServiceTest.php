@@ -4,10 +4,11 @@ namespace App\Tests\Unit\Service;
 
 use App\Entity\Coin;
 use App\Exception\CoinException;
+use App\Service\ChangeService;
 use App\Service\CoinService;
+use App\Service\ItemService;
 use App\Service\PocketService;
 use App\Service\VendingService;
-use App\Utils\CoinHelper;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -16,23 +17,29 @@ class VendingServiceTest extends TestCase
     /**
      * @var CoinService|mixed|MockObject
      */
-    protected $coinService;
+    protected CoinService $coinService;
 
     /**
      * @var PocketService|mixed|MockObject
      */
-    protected $pocketService;
+    protected PocketService $pocketService;
 
     /**
-     * @var CoinHelper|mixed|MockObject
+     * @var ItemService|mixed|MockObject
      */
-    protected $coinHelper;
+    protected ItemService $itemService;
+
+    /**
+     * @var ChangeService|mixed|MockObject
+     */
+    protected ChangeService $changeService;
 
     public function setUp(): void
     {
         $this->coinService = $this->createMock(CoinService::class);
         $this->pocketService = $this->createMock(PocketService::class);
-        $this->coinHelper = $this->createMock(CoinHelper::class);
+        $this->itemService = $this->createMock(ItemService::class);
+        $this->changeService = $this->createMock(ChangeService::class);
     }
 
     /**
@@ -41,17 +48,18 @@ class VendingServiceTest extends TestCase
     public function testReturnCoins(): void
     {
         $coinValue = 0.25;
-        $this->coinHelper->expects($this->once())
-            ->method('parseString')
-            ->willReturn($coinValue);
-
         $coin = new Coin();
         $coin->setValue($coinValue);
         $this->coinService->expects($this->once())
             ->method('findCoinByValue')
             ->willReturn($coin);
 
-        $vendingService = new VendingService($this->coinService, $this->pocketService, $this->coinHelper);
+        $vendingService = new VendingService(
+            $this->coinService,
+            $this->pocketService,
+            $this->itemService,
+            $this->changeService
+        );
         $vendingService->insertCoin((string) $coinValue);
 
         $this->pocketService->expects($this->once())

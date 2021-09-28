@@ -11,4 +11,9 @@ class CoinException extends Exception
     {
         return new self('The inserted coin is not valid!');
     }
+
+    public static function notEnoughCoins(): self
+    {
+        return new self('Not enough coins to buy item!');
+    }
 }

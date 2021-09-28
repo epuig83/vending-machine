@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Coin;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,16 +21,17 @@ class CoinRepository extends ServiceEntityRepository
     }
 
     /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * Get all the coins sorted by value (DESC) and less than one
+     *
+     * @return array|null
      */
-    public function findOneByItemType(string $drinkType): ?Coin
+    public function findCoinsSortedByValue(): ?array
     {
-        return $this->createQueryBuilder('d')
-            ->leftJoin('d.type', 'drink_type')
-            ->andWhere('drink_type.name = :name')
-            ->setParameter('name', $drinkType)
+        return $this->createQueryBuilder('c')
+            ->select('c.value, c.amount')
+            ->where('c.value < 1')
+            ->orderBy('c.value', 'DESC')
             ->getQuery()
-            ->getOneOrNullResult()
-            ;
+            ->getResult();
     }
 }

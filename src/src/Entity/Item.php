@@ -2,9 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\DrinkRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\ItemRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -22,17 +20,17 @@ class Item
     /**
      * @ORM\Column(type="string")
      */
-    private $name;
+    private ?string $name;
 
     /**
      * @ORM\Column(type="float")
      */
-    private $price;
+    private ?float $price;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $amount;
+    private ?int $amount;
 
     /**
      * @return int|null
