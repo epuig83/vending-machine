@@ -9,7 +9,6 @@ use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class VendingApiController extends AbstractController
 {
@@ -91,7 +90,6 @@ class VendingApiController extends AbstractController
      * @param Request $request
      * @param VendingService $vendingService
      * @return Response
-     * @throws CoinException
      */
     public function getItemBuy(Request $request, VendingService $vendingService): Response
     {
@@ -103,7 +101,7 @@ class VendingApiController extends AbstractController
                 'success' => true,
                 'change' => $change
             ], Response::HTTP_OK);
-        } catch (ItemException $e) {
+        } catch (ItemException | CoinException $e) {
             return $this->json([
                 'success' => false,
                 'message' => $e->getMessage()
