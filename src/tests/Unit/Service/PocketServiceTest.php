@@ -81,5 +81,4 @@ class PocketServiceTest extends TestCase
             $pocketService->status()
         );
     }
-
 }

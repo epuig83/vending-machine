@@ -20,12 +20,12 @@ class Coin
     /**
      * @ORM\Column(type="float")
      */
-    private $value;
+    private ?float $value;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $amount;
+    private ?int $amount;
 
     /**
      * @return int|null

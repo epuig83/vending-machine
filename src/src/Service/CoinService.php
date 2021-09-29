@@ -58,4 +58,28 @@ class CoinService
 
         $this->em->flush();
     }
+
+    /**
+     * @param Coin $coin
+     * @param int $amount
+     * @throws CoinException
+     */
+    public function updateCoin(Coin $coin, int $amount): void
+    {
+        if ($amount < 0) {
+            throw CoinException::notValidAmountMessage();
+        }
+
+        $coin->setAmount($coin->getAmount() + $amount);
+        $this->em->persist($coin);
+        $this->em->flush();
+    }
+
+    /**
+     * @return array
+     */
+    public function status(): array
+    {
+        return $this->em->getRepository(Coin::class)->findAll();
+    }
 }

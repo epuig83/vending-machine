@@ -39,28 +39,35 @@ class ItemService
 
     /**
      * @param Item $item
+     * @param array $payload
+     * @throws ItemException
+     */
+    public function updateItem(Item $item, array $payload): void
+    {
+        if ($payload['price'] < 0 || $payload['amount'] < 0) {
+            throw ItemException::notValidParametersMessage();
+        }
+
+        $item->setPrice(number_format($payload['price'], 2));
+        $item->setAmount($item->getAmount() + $payload['amount']);
+        $this->em->persist($item);
+        $this->em->flush();
+    }
+
+    /**
+     * @param Item $item
      */
     public function updateItemStatus(Item $item): void
     {
         $item->setAmount($item->getAmount() - self::ITEM_DECREASE_VALUE);
         $this->em->flush();
     }
-    
+
     /**
      * @return array
-     * @throws ItemException
      */
     public function status(): array
     {
-        $repository = $this->em->getRepository(Item::class);
-        $items = $repository->findAll();
-
-        if (!$items) {
-            throw ItemException::notFoundMessage();
-        }
-
-        return $items;
+        return $this->em->getRepository(Item::class)->findAll();
     }
-
-
 }

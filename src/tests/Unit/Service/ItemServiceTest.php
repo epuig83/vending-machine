@@ -32,7 +32,7 @@ class ItemServiceTest extends TestCase
     /**
      * @throws ItemException
      */
-    public function testFindItemByName__ReturnItem(): void
+    public function testFindItemByName__returnItem(): void
     {
         $itemName = 'Juice';
         $item = new Item();
@@ -56,7 +56,7 @@ class ItemServiceTest extends TestCase
     /**
      * @throws ItemException
      */
-    public function testFindItemByName__ThrowsNotFoundException(): void
+    public function testFindItemByName__throwsNotFoundException(): void
     {
         $this->mockedItemRepository->expects($this->once())
             ->method('findOneAvailableByName')
@@ -82,5 +82,75 @@ class ItemServiceTest extends TestCase
         $itemService->updateItemStatus($item);
 
         $this->assertEquals(3, $item->getAmount());
+    }
+
+    /**
+     * @throws ItemException
+     */
+    public function testUpdateItem(): void
+    {
+        $itemName = 'Soda';
+        $item = new Item();
+        $item->setName($itemName);
+        $item->setPrice(4);
+        $item->setAmount(12);
+
+        $payload = ['price' => 5, 'amount' => 10];
+        $itemService = new ItemService($this->em);
+        $itemService->updateItem($item, $payload);
+
+        $this->assertEquals('Soda', $item->getName());
+        $this->assertEquals(5, $item->getPrice());
+        $this->assertEquals(22, $item->getAmount());
+    }
+
+    /**
+     * @throws ItemException
+     */
+    public function testUpdateItem__throwsNotValidParametersException(): void
+    {
+        $itemName = 'Soda';
+        $item = new Item();
+        $item->setName($itemName);
+        $item->setPrice(4);
+        $item->setAmount(12);
+
+        $payload = ['price' => -5, 'amount' => 10];
+        $itemService = new ItemService($this->em);
+        $this->expectException(ItemException::class);
+        $itemService->updateItem($item, $payload);
+    }
+
+    public function testStatus(): void
+    {
+        $itemName = 'Water';
+        $item = new Item();
+        $item->setName($itemName);
+        $item->setAmount(4);
+
+        $itemName2 = 'Juice';
+        $item2 = new Item();
+        $item2->setName($itemName);
+        $item2->setAmount(7);
+
+        $itemName3 = 'Soda';
+        $item3 = new Item();
+        $item3->setName($itemName);
+        $item3->setAmount(2);
+
+        $itemsCollection = [$itemName, $itemName2, $itemName3];
+
+        $this->mockedItemRepository->expects($this->once())
+            ->method('findAll')
+            ->willReturn($itemsCollection);
+
+        $this->em->expects($this->once())
+            ->method('getRepository')
+            ->willReturn($this->mockedItemRepository);
+
+        $itemService = new ItemService($this->em);
+        $result = $itemService->status();
+
+        $this->assertEquals($itemsCollection, $result);
     }
 }

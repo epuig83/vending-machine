@@ -12,8 +12,8 @@ class ItemException extends Exception
         return new self('Item(s) not found!');
     }
 
-    public static function notEnoughMoney(): self
+    public static function notValidParametersMessage(): self
     {
-        return new self('Not enough money to buy selected item.');
+        return new self('Item price or amount should be equal or greater than zero.');
     }
 }
