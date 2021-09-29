@@ -27,28 +27,6 @@ class ChangeService
     }
 
     /**
-     * @return array
-     */
-    public function getCoinStatus(): array
-    {
-        return $this->coinStatus;
-    }
-
-    /**
-     * @param Item $item
-     * @param float $insertedMoney
-     * @return array
-     * @throws CoinException
-     */
-    public function getChange(Item $item, float $insertedMoney): array
-    {
-        $repository = $this->em->getRepository(Coin::class);
-        $this->coinStatus = $repository->findCoinsSortedByValue();
-        $change = number_format($insertedMoney - $item->getPrice(), 2);
-        return $this->calculateChange($change);
-    }
-
-    /**
      * @param float $change
      * @return array
      * @throws CoinException
@@ -69,9 +47,32 @@ class ChangeService
         }
 
         if ($change > 0) {
-            throw CoinException::notEnoughCoins();
+            throw CoinException::notEnoughCoinsMessage();
         }
 
         return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCoinStatus(): array
+    {
+        return $this->coinStatus;
+    }
+
+    /**
+     * @param Item $item
+     * @param float $insertedMoney
+     * @return array
+     * @throws CoinException
+     */
+    public function getChange(Item $item, float $insertedMoney): array
+    {
+        $repository = $this->em->getRepository(Coin::class);
+        $this->coinStatus = $repository->findCoinsSortedByValue();
+        $change = number_format($insertedMoney - $item->getPrice(), 2);
+
+        return $this->calculateChange($change);
     }
 }

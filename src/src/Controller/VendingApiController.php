@@ -97,6 +97,8 @@ class VendingApiController extends AbstractController
     {
         try{
             $change = $vendingService->buyItem($request->get('name'));
+            $vendingService->updateStates();
+
             return $this->json([
                 'success' => true,
                 'change' => $change
@@ -118,20 +120,11 @@ class VendingApiController extends AbstractController
      *      )
      * )
      *
-     * @param SerializerInterface $serializer
      * @param VendingService $vendingService
      * @return Response
-     * @throws ItemException
      */
-    public function getItemStatus(SerializerInterface $serializer, VendingService $vendingService): Response
+    public function getItemStatus(VendingService $vendingService): Response
     {
-        return new Response(
-            $serializer->serialize(
-                $vendingService->getItemStatus(),
-                'json',
-                ['json_encode_options' => JSON_PRETTY_PRINT]
-            ),
-            Response::HTTP_OK
-        );
+        return $this->json($vendingService->getItemStatus(), Response::HTTP_OK);
     }
 }

@@ -47,6 +47,17 @@ class VendingService
         $this->selectedItem = null;
     }
 
+    public function updateStates(): void
+    {
+        $this->coinService->updateCoinStatus(
+            $this->changeService->getCoinStatus(),
+            $this->pocketService->getCoins(),
+        );
+
+        $this->pocketService->empty();
+        $this->itemService->updateItemStatus($this->selectedItem);
+    }
+
     /**
      * @param string $coinString
      * @throws CoinException
@@ -84,34 +95,55 @@ class VendingService
     {
         $this->selectedItem  = $this->itemService->findItemByName($item);
         if ($this->pocketService->getTotalAmount() < $this->selectedItem->getPrice()) {
-            throw ItemException::notEnoughMoney();
+            throw CoinException::notEnoughMoneyMessage();
         }
 
-        $change = $this->changeService->getChange($this->selectedItem, $this->pocketService->getTotalAmount());
-        $this->updateStates();
-
-        return $change;
-
+        return $this->changeService->getChange(
+            $this->selectedItem,
+            $this->pocketService->getTotalAmount()
+        );
     }
 
     /**
      * @return array
-     * @throws ItemException
      */
     public function getItemStatus(): array
     {
         return $this->itemService->status();
     }
 
-    private function updateStates(): void
+    /**
+     * @param string $coinString
+     * @param array $payload
+     * @throws CoinException
+     */
+    public function updateCoin(string $coinString, array $payload): void
     {
-        $this->coinService->updateCoinStatus(
-            $this->changeService->getCoinStatus(),
-            $this->pocketService->getCoins(),
-        );
+        $coinValue = CoinHelper::parseString($coinString);
+        $coin = $this->coinService->findCoinByValue($coinValue);
+        $this->coinService->updateCoin($coin, $payload['amount']);
+    }
 
-        $this->pocketService->empty();
-        $this->itemService->updateItemStatus($this->selectedItem);
+    /**
+     * @param string $itemName
+     * @param array $payload
+     * @throws ItemException
+     */
+    public function updateItem(string $itemName, array $payload): void
+    {
+        $item = $this->itemService->findItemByName($itemName);
+        $this->itemService->updateItem($item, $payload);
+    }
 
+    /**
+     * @return array
+     */
+    public function getStatus(): array
+    {
+        return [
+            'pocket'  => $this->pocketService->status(),
+            'machine' => $this->coinService->status(),
+            'items'   => $this->itemService->status()
+        ];
     }
 }

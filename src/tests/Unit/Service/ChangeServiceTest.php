@@ -29,11 +29,10 @@ class ChangeServiceTest extends TestCase
         $this->mockedCoinRepository = $this->createMock(CoinRepository::class);
     }
 
-
     /**
      * @throws CoinException
      */
-    public function testCalculateChange(): void
+    public function testGetChange(): void
     {
         $coinsCollection = [
             [
@@ -67,5 +66,96 @@ class ChangeServiceTest extends TestCase
         $changeService = new ChangeService($this->em);
 
         $this->assertEquals([0.25, 0.1, 0.1], $changeService->getChange($item, 1.95));
+    }
+
+    /**
+     * @throws CoinException
+     */
+    public function testGetChange__throwsNotEnoughCoinsException(): void
+    {
+        $coinsCollection = [
+            [
+                'value' => 0.25,
+                'amount' => 2
+            ],
+            [
+                'value' => 0.10,
+                'amount' => 1
+            ],
+            [
+                'value' => 0.05,
+                'amount' => 1
+            ]
+        ];
+
+        $this->mockedCoinRepository->expects($this->once())
+            ->method('findCoinsSortedByValue')
+            ->willReturn($coinsCollection);
+
+        $this->em->expects($this->once())
+            ->method('getRepository')
+            ->willReturn($this->mockedCoinRepository);
+
+        $itemName = 'Soda';
+        $item = new Item();
+        $item->setName($itemName);
+        $item->setPrice(1.50);
+        $item->setAmount(4);
+
+        $changeService = new ChangeService($this->em);
+        $this->expectException(CoinException::class);
+        $result = $changeService->getChange($item, 1.95);
+
+    }
+
+    public function testGetCoins(): void
+    {
+        $coinsCollection = [
+            [
+                'value' => 0.25,
+                'amount' => 23
+            ],
+            [
+                'value' => 0.10,
+                'amount' => 34
+            ],
+            [
+                'value' => 0.05,
+                'amount' => 15
+            ]
+        ];
+
+        $expectedCollection = [
+            [
+                'value' => 0.25,
+                'amount' => 22
+            ],
+            [
+                'value' => 0.10,
+                'amount' => 32
+            ],
+            [
+                'value' => 0.05,
+                'amount' => 15
+            ]
+        ];
+
+        $this->mockedCoinRepository->expects($this->once())
+            ->method('findCoinsSortedByValue')
+            ->willReturn($coinsCollection);
+
+        $this->em->expects($this->once())
+            ->method('getRepository')
+            ->willReturn($this->mockedCoinRepository);
+
+        $itemName = 'Soda';
+        $item = new Item();
+        $item->setName($itemName);
+        $item->setPrice(1.50);
+        $item->setAmount(4);
+
+        $changeService = new ChangeService($this->em);
+        $result = $changeService->getChange($item, 1.95);
+        $this->assertEquals($expectedCollection, $changeService->getCoinStatus());
     }
 }
