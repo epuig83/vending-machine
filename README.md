@@ -59,11 +59,14 @@ $ cd vending-machine
 ### Build up all containers
 
 ```sh
+$ cd docker
 $ docker-compose build
 $ docker-compose up -d
 ```
 
 ### Access to bash container
+
+Available containers: [webserver, mysql, phpmyadmin]
 
 ```sh
 $ docker exec -it [container-name] bash
@@ -72,37 +75,37 @@ $ docker exec -it [container-name] bash
 ### Composer dependencies
 
 ```sh
-$ docker-compose run --rm webserver php composer.phar install --no-interaction
+$ docker-compose exec webserver composer install --no-interaction
 ```
 
 ### Run Doctrine migrations
 
 ```sh
-$ docker-compose run --rm webserver php bin/console doctrine:migrations:migrate
+$ docker-compose exec webserver php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
 ### Load default coins and items (Doctrine fixtures)
 
 ```sh
-$ docker-compose run --rm webserver php bin/console doctrine:fixtures:load --no-interaction
+$ docker-compose exec webserver php bin/console doctrine:fixtures:load --no-interaction
 ```
 
 ### Create new test database
 
 ```sh
-$ docker-compose run --rm webserver php bin/console doctrine:database:create --env=test --no-interaction
+$ docker-compose exec webserver php bin/console doctrine:database:create --env=test --no-interaction
 ```
 
 ### Run Doctrine migrations for test database
 
 ```sh
-$ docker-compose run --rm webserver php bin/console doctrine:migrations:migrate --env=test --no-interaction
+$ docker-compose exec webserver php bin/console doctrine:migrations:migrate --env=test --no-interaction
 ```
 
 ### Load default coins and items for test database (Doctrine fixtures)
 
 ```sh
-$ docker-compose run --rm webserver php bin/console doctrine:fixtures:load --no-interaction --env=test
+$ docker-compose exec webserver php bin/console doctrine:fixtures:load --no-interaction --env=test
 ```
 
 
@@ -111,7 +114,7 @@ Testing
 Run tests
 
 ```sh
-./vendor/bin/phpunit
+$ docker-compose exec webserver php ./vendor/bin/phpunit
 ```
 
 API Docs
