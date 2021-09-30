@@ -3,8 +3,6 @@ FROM php:7.4-apache
 RUN apt-get -y update --fix-missing
 RUN apt-get upgrade -y
 
-
-
 # Install useful tools
 RUN apt-get -y install apt-utils nano wget dialog
 
@@ -17,8 +15,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Install xdebug
 RUN pecl install xdebug-beta
 RUN docker-php-ext-enable xdebug
-
-
 
 # Other PHP7 Extensions
 RUN apt-get -y install libsqlite3-dev libsqlite3-0 mariadb-client
@@ -35,14 +31,11 @@ RUN apt-get install -y libzip-dev
 RUN docker-php-ext-install zip
 
 RUN apt-get -y install libicu-dev
-RUN docker-php-ext-install -j$(nproc) intl
 
-# RUN docker-php-ext-install mbstring
+RUN docker-php-ext-install -j$(nproc) intl
 RUN docker-php-ext-install bcmath
 
 RUN apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev
-# RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
-# RUN docker-php-ext-install -j$(nproc) gd
 
 # Enable apache rewrite
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
@@ -55,3 +48,4 @@ RUN a2enmod ssl
 WORKDIR /var/www/html
 ADD . /var/www/html
 RUN chown -R www-data:www-data /var/www
+RUN chmod -R 777 /var/www

@@ -3,6 +3,7 @@ version: "3"
 services:
   webserver:
     build: ./webserver
+    container_name: webserver
     ports:
       - "8009:80"
     volumes:
