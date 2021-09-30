@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class VendingApiController extends AbstractController
 {
     /**
-     * @OA\Post(tags={"Coin"}, summary="Insert new coin inside the vending machine.",
+     * @OA\Post(tags={"Coin"}, summary="Insert coin.",
      *      @OA\Parameter(
      *          name="coin",
      *          in="path",
@@ -22,7 +22,11 @@ class VendingApiController extends AbstractController
      *      ),
      *      @OA\Response(
      *          response=201,
-     *          description="Insert Coin"
+     *          description="Inserted Coin"
+     *      ),
+     *     @OA\Response(
+     *          response=200,
+     *          description="Not Inserted Coin"
      *      )
      * )
      *
@@ -47,7 +51,7 @@ class VendingApiController extends AbstractController
     }
 
     /**
-     * @OA\Get(tags={"Coin"}, summary="Return inserted coins in the vending machine.",
+     * @OA\Get(tags={"Coin"}, summary="Return inserted coins.",
      *      @OA\Response(
      *          response=200,
      *          description="Return inserted coins."
@@ -64,10 +68,10 @@ class VendingApiController extends AbstractController
     }
 
     /**
-     * @OA\Get(tags={"Coin"}, summary="Show total money and inserted coins in the vending machine.",
+     * @OA\Get(tags={"Coin"}, summary="Show inserted coins by value and its total amount.",
      *      @OA\Response(
      *          response=200,
-     *          description="Return inserted coins."
+     *          description="Return inserted coins and its total amount."
      *      )
      * )
      *
@@ -83,8 +87,8 @@ class VendingApiController extends AbstractController
      * @OA\Get(tags={"Item"}, summary="Select item to buy and get coins change.",
      *      @OA\Response(
      *          response=200,
-     *          description="Return change coins."
-     *      )
+     *          description="Return bought item and change."
+     *      ),
      * )
      *
      * @param Request $request
@@ -99,7 +103,7 @@ class VendingApiController extends AbstractController
 
             return $this->json([
                 'success' => true,
-                'change' => $change
+                'data' => $change
             ], Response::HTTP_OK);
         } catch (ItemException | CoinException $e) {
             return $this->json([
@@ -112,10 +116,10 @@ class VendingApiController extends AbstractController
 
     /**
      * @OA\Get(tags={"Item"}, summary="Get item status from vending machine.",
-     *      @OA\Response(
-     *          response=200,
-     *          description="Return all items from vending machine."
-     *      )
+     *    @OA\Response(
+     *        response=200,
+     *        description="Return all items from vending machine."
+     *    )
      * )
      *
      * @param VendingService $vendingService

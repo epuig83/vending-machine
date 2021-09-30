@@ -13,12 +13,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class ServiceApiController extends AbstractController
 {
     /**
-     * @OA\Post(tags={"Manager"}, summary="Update coin amount of the vending machine.",
+     * @OA\Put(tags={"Service"}, summary="Update coin amount of the vending machine.",
      *      @OA\Parameter(
      *          name="coin",
      *          in="path",
      *          required=true,
      *          description="The coin value."
+     *      ),
+     *      @OA\Parameter(
+     *          name="body",
+     *          in="header",
+     *          description="JSON Payload",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="object",
+     *              @OA\Property(property="amount", type="number", description="* Note: the amount must be a value between [0..99]", example=5)
+     *          )
      *      ),
      *      @OA\Response(
      *          response=201,
@@ -48,12 +58,23 @@ class ServiceApiController extends AbstractController
     }
 
     /**
-     * @OA\Post(tags={"Manager"}, summary="Update coin amount of the vending machine.",
+     * @OA\Put(tags={"Service"}, summary="Update item price and amount in the vending machine.",
      *      @OA\Parameter(
      *          name="name",
      *          in="path",
      *          required=true,
      *          description="The item name."
+     *      ),
+     *      @OA\Parameter(
+     *          name="body",
+     *          in="header",
+     *          description="JSON Payload",
+     *          required=true,
+     *          @OA\Schema(
+     *              type="object",
+     *              @OA\Property(property="price", type="number", description="* Note: the price must be a value between [0..9.99]", example=0.90),
+     *              @OA\Property(property="amount", type="number", description="* Note: the amount must be a value between [0..99]", example=5)
+     *          )
      *      ),
      *      @OA\Response(
      *          response=201,
@@ -83,10 +104,10 @@ class ServiceApiController extends AbstractController
     }
 
     /**
-     * @OA\Post(tags={"Manager"}, summary="Show vending machine status.",
+     * @OA\Get(tags={"Service"}, summary="Show vending machine status.",
      *      @OA\Response(
      *          response=200,
-     *          description="."
+     *          description="Show pocket coins, all items information and available coins in the vending machine."
      *      )
      * )
      *
