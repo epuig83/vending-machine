@@ -1,0 +1,49 @@
+app.swagger_ui:
+  path:       /api/doc
+  methods:    GET
+  controller: nelmio_api_doc.controller.swagger_ui
+
+app.swagger:
+  path:       /api/doc.json
+  methods:    GET
+  controller: nelmio_api_doc.controller.swagger
+
+api__insert_coin:
+  path:       /api/coin/insert/{coin}
+  controller: App\Controller\VendingApiController::insertCoin
+  methods:    POST
+
+api__coin_return:
+  path:       /api/coin/return
+  controller: App\Controller\VendingApiController::returnCoin
+  methods:    GET
+
+api__coin_status:
+  path:       /api/coin/status
+  controller: App\Controller\VendingApiController::getCoinStatus
+  methods:    GET
+
+api__item_buy:
+  path:       /api/item/buy/{name}
+  controller: App\Controller\VendingApiController:getItemBuy
+  methods:    GET
+
+api__item_status:
+  path:       /api/item/status
+  controller: App\Controller\VendingApiController:getItemStatus
+  methods:    GET
+
+api__service_coin:
+  path:       /api/service/coin/{coin}
+  controller: App\Controller\ServiceApiController:putCoin
+  methods:    PUT
+
+api__service_item:
+  path:       /api/service/item/{name}
+  controller: App\Controller\ServiceApiController:putItem
+  methods:    PUT
+
+api__service_status:
+  path:       /api/service/status
+  controller: App\Controller\ServiceApiController:getStatus
+  methods:    GET

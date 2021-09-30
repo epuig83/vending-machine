@@ -1,0 +1,57 @@
+version: "3"
+
+services:
+  webserver:
+    build: ./webserver
+    container_name: webserver
+    ports:
+      - "8009:80"
+    volumes:
+      - ../src:/var/www/html/
+    depends_on:
+      - mysql
+    networks:
+      br0:
+        ipv4_address: 192.168.202.3
+
+  mysql:
+    build: ./mysql
+    container_name: mysql
+    hostname: localhost
+    environment:
+      MYSQL_ROOT_PASSWORD: 'toor'
+      MYSQL_DATABASE: vending_machine
+    ports:
+      - "3307:3306"
+    volumes:
+      - ${MYSQL_DATA_DIR-./data/mysql}:/var/lib/mysql
+      - ${MYSQL_LOG_DIR-./logs/mysql}:/var/log/mysql
+    networks:
+      br0:
+        ipv4_address: 192.168.202.2
+
+  phpmyadmin:
+    container_name: phpmyadmin
+    build: ./phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_USER=root
+      - PMA_PASSWORD=toor
+    links:
+      - mysql
+    ports:
+      - "8088:80"
+    volumes:
+      - /sessions
+    networks:
+      br0:
+        ipv4_address: 192.168.202.4
+
+networks:
+  br0:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.202.0/24
+          gateway: 192.168.202.1
