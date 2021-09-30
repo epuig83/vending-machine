@@ -266,7 +266,7 @@ class VendingServiceTest extends TestCase
 
     public function testGetStatus(): void
     {
-        //pocketService
+        //pocket
         $coin = new Coin();
         $coin->setValue(0.05);
 
@@ -355,7 +355,7 @@ class VendingServiceTest extends TestCase
                         $coin2->getValue(),
                     ]
                 ],
-                "machine" => $coinsCollection,
+                "coins" => $coinsCollection,
                 "items" => $itemsCollection,
             ],
             $vendingService->getStatus()

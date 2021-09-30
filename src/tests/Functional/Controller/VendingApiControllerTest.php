@@ -111,7 +111,7 @@ class VendingApiControllerTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         $this->assertStringContainsString(
-            '{"success":true,"change":[0.25,0.1]',
+            '{"success":true,"data":{"item":"Water","coins":[0.25,0.1]}}',
             $client->getResponse()->getContent()
         );
     }

@@ -98,10 +98,13 @@ class VendingService
             throw CoinException::notEnoughMoneyMessage();
         }
 
-        return $this->changeService->getChange(
-            $this->selectedItem,
-            $this->pocketService->getTotalAmount()
-        );
+        return [
+            'item' => $this->selectedItem->getName(),
+            'coins' => $this->changeService->getChange(
+                $this->selectedItem,
+                $this->pocketService->getTotalAmount()
+            )
+        ];
     }
 
     /**
@@ -142,7 +145,7 @@ class VendingService
     {
         return [
             'pocket'  => $this->pocketService->status(),
-            'machine' => $this->coinService->status(),
+            'coins' => $this->coinService->status(),
             'items'   => $this->itemService->status()
         ];
     }
